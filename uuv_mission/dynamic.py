@@ -4,7 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import _csv
 import pandas as pd 
-from .terrain import generate_reference_and_limits
+
+# import sys
+# import os
+
+# Add the parent directory of the uuv_mission package to the Python path
+# sys.path.append(os.path.abspath(os.path.join('..')))
+
+from uuv_mission.terrain import generate_reference_and_limits
+from uuv_mission.control import PDController    
 
 class Submarine:
     def __init__(self):
@@ -81,12 +89,12 @@ class Mission:
         
         reference = df['reference'].to_numpy()  
         cave_height = df['cave_height'].to_numpy()
-        cave_depth = 
-        pass
-
+        cave_depth = df['cave_depth'].to_numpy()
+        
+        return cls(reference, cave_height, cave_depth)
 
 class ClosedLoop:
-    def __init__(self, plant: Submarine, controller):
+    def __init__(self, plant: Submarine, controller: PDController):
         self.plant = plant
         self.controller = controller
 
@@ -103,7 +111,11 @@ class ClosedLoop:
         for t in range(T):
             positions[t] = self.plant.get_position()
             observation_t = self.plant.get_depth()
-            # Call your controller here
+            
+            # inputting controller
+            
+            actions[t] = self.controller.compute_control(mission.reference[t], observation_t, self.plant.dt)
+            
             self.plant.transition(actions[t], disturbances[t])
 
         return Trajectory(positions)

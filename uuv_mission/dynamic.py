@@ -109,7 +109,7 @@ class ClosedLoop:
             positions[t] = self.plant.get_position()
             observation_t = self.plant.get_depth()
             
-            # Acioning the controller
+            # Actioning the controller
             
             actions[t] = self.controller.compute_control(mission.reference[t], observation_t, self.plant.dt)
             

@@ -8,9 +8,6 @@ import pandas as pd
 # import sys
 # import os
 
-# Add the parent directory of the uuv_mission package to the Python path
-# sys.path.append(os.path.abspath(os.path.join('..')))
-
 from uuv_mission.terrain import generate_reference_and_limits
 from uuv_mission.control import PDController    
 
@@ -112,7 +109,7 @@ class ClosedLoop:
             positions[t] = self.plant.get_position()
             observation_t = self.plant.get_depth()
             
-            # inputting controller
+            # Acioning the controller
             
             actions[t] = self.controller.compute_control(mission.reference[t], observation_t, self.plant.dt)
             
